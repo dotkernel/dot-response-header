@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'dot_response_headers' => [
+        '*' => [
+            'CustomHeader1' => [
+                'value' => 'CustomHeader1-Value',
+                'overwrite' => true,
+            ],
+            'CustomHeader2' => [
+                'value' => 'CustomHeader2-Value',
+                'overwrite' => false,
+            ],
+        ],
+        'home' => [
+            'CustomHeader' => [
+                'value' => 'header3',
+            ]
+        ]
+    ]
+];
