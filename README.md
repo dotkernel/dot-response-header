@@ -1,7 +1,7 @@
 # dot-response-header
 
-![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/response-header)
-[![GitHub license](https://img.shields.io/github/license/dotkernel/response-header)](https://github.com/dotkernel/response-header/LICENSE.md)
+![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/LICENSE.md)
 
 Middleware for setting and overwriting custom response headers.
 
