@@ -59,10 +59,8 @@ class ResponseHeaderMiddleware implements MiddlewareInterface
                     continue;
                 }
                 $overwrite = (isset($data['overwrite']) && $data['overwrite'] === true) ? true : false;
-                if ($response->hasHeader($header) && $overwrite) {
+                if ($overwrite) {
                     $response = $response->withHeader($header, $data['value']);
-                } else {
-                    $response = $response->withAddedHeader($header, $data['value']);
                 }
             }
         }
