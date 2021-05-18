@@ -1,7 +1,7 @@
 # dot-response-header
 
-![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/response-header)
-[![GitHub license](https://img.shields.io/github/license/dotkernel/response-header)](https://github.com/dotkernel/response-header/LICENSE.md)
+![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/response-header/LICENSE.md)
 
 Middleware for setting and overwriting custom response headers.
 
@@ -19,9 +19,16 @@ $ composer require dotkernel/dot-response-header
 
 Next, register the package's `ConfigProvider` to your application config.
 
-``Dot\Dot\ResponseHeader\ConfigProvider::class,``
+``Dot\ResponseHeader\ConfigProvider::class,``
 
 Note : Make sure to register the package under the `// DK packages` section.
+
+After registering the package, add it to the middleware stack in ``config/pipeline.php`` after `$app->pipe(RouteMiddleware::class);`
+
+```
+$app->pipe(RouteMiddleware::class);
+$app->pipe(\Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware::class);
+```
 
 Create a new file ``response-header.global.php`` in ``config/autoload`` with the below configuration array :
 
