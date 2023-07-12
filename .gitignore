@@ -1,1 +1,6 @@
+composer.phar
+/vendor/
+.phpcs-cache
 .idea
+composer.lock
+.phpunit.result.cache
