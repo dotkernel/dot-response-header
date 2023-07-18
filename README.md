@@ -8,6 +8,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/stargazers)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/response-header/LICENSE.md)
 
+[![SymfonyInsight](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438/big.svg)](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438)
+
+
 Middleware for setting and overwriting custom response headers.
 
 
