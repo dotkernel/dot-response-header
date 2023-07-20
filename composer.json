@@ -31,12 +31,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Dot\\ResponseHeader\\": "src"
+      "Dot\\ResponseHeader\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "DotTest\\ResponseHeader\\": "tests/"
+      "DotTest\\ResponseHeader\\": "test/"
     }
   },
   "scripts": {

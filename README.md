@@ -1,12 +1,14 @@
 # dot-response-header
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.1.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.2.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/network)
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/stargazers)
-[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/response-header/LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/blob/3.0/LICENSE)
+
+[![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml)
 
 [![SymfonyInsight](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438/big.svg)](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438)
 
@@ -15,7 +17,7 @@ Middleware for setting and overwriting custom response headers.
 
 
 ### Requirements
-- PHP >= 7.4
+- PHP >= 8.1
 
 ### Installation
 

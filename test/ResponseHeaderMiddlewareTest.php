@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DotTest\ResponseHeader;
 
 use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -22,10 +23,11 @@ class ResponseHeaderMiddlewareTest extends TestCase
 
     private ResponseInterface $responseInterface;
 
+    /**
+     * @throws Exception
+     */
     public function setUp(): void
     {
-        parent::setUp();
-
         $this->responseHeader    = new ResponseHeaderMiddleware([]);
         $this->serverRequest     = $this->createMock(ServerRequestInterface::class);
         $this->requestHandler    = $this->createMock(RequestHandlerInterface::class);
@@ -47,7 +49,7 @@ class ResponseHeaderMiddlewareTest extends TestCase
 
     public function testAddHeaders()
     {
-        $data = $this->responseHeader->addHeaders($this->responseInterface, 'home');
+        $data = $this->responseHeader->addHeaders($this->responseInterface, '');
 
         $this->assertInstanceOf(ResponseInterface::class, $data);
     }
