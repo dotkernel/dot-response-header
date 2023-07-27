@@ -6,7 +6,6 @@ namespace DotTest\ResponseHeader;
 
 use Dot\ResponseHeader\Factory\ResponseHeaderMiddlewareFactory;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -14,19 +13,6 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class ResponseHeaderMiddlewareFactoryTest extends TestCase
 {
-    private ResponseHeaderMiddlewareFactory $responseHeaderMiddlewareFactory;
-
-    private ContainerInterface|MockObject $containerInterface;
-
-    /**
-     * @throws Exception
-     */
-    public function setUp(): void
-    {
-        $this->responseHeaderMiddlewareFactory = new ResponseHeaderMiddlewareFactory();
-        $this->containerInterface              = $this->createMock(ContainerInterface::class);
-    }
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
