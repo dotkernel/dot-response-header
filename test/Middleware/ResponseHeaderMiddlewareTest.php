@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DotTest\ResponseHeader;
 
 use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
+use Laminas\Diactoros\Response;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -47,10 +48,41 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertIsString($data->getReasonPhrase());
     }
 
-    public function testAddHeaders()
+    public function testWillNotAddHeadersWithoutCommonWithoutRouteSpecificHeadersConfigured(): void
     {
-        $data = $this->responseHeader->addHeaders($this->responseInterface, '');
+        $responseHeader = new ResponseHeaderMiddleware([]);
 
-        $this->assertInstanceOf(ResponseInterface::class, $data);
+        $response = new Response();
+        $response = $responseHeader->addHeaders($response, 'test');
+
+        $this->assertEmpty($response->getHeaders());
+    }
+
+    public function testWillAddHeadersWithCommonWithoutRouteSpecificHeadersConfigured(): void
+    {
+        $responseHeader = new ResponseHeaderMiddleware([
+            '*' => [
+                'CustomHeader1' => [
+                    'value'     => 'CustomHeader1-Value',
+                    'overwrite' => true,
+                ],
+                'CustomHeader2' => [
+                    'value'     => 'CustomHeader2-Value',
+                    'overwrite' => false,
+                ],
+            ],
+        ]);
+
+        $response = new Response();
+
+        $response = $responseHeader->addHeaders($response, 'test');
+        $this->assertEmpty($response->getHeaders());
+        $this->assertFalse($response->hasHeader('CustomHeader1'));
+        $this->assertFalse($response->hasHeader('CustomHeader2'));
+
+        $response = $responseHeader->addHeaders($response, '*');
+        $this->assertCount(2, $response->getHeaders());
+        $this->assertTrue($response->hasHeader('CustomHeader1'));
+        $this->assertTrue($response->hasHeader('CustomHeader2'));
     }
 }
