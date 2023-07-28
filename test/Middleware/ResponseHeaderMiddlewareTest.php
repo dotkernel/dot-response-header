@@ -82,8 +82,8 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertCount(2, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader1'));
         $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($response->getHeaderLine('CustomHeader1'), $config['*']['CustomHeader1']['value']);
-        $this->assertSame($response->getHeaderLine('CustomHeader2'), $config['*']['CustomHeader2']['value']);
+        $this->assertSame($config['*']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
+        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
     }
 
     public function testWillAddHeadersWithCommonWithRouteSpecificHeadersConfiguredWhenNoRouteMatched(): void
@@ -117,8 +117,8 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertCount(2, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader1'));
         $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($response->getHeaderLine('CustomHeader1'), $config['*']['CustomHeader1']['value']);
-        $this->assertSame($response->getHeaderLine('CustomHeader2'), $config['*']['CustomHeader2']['value']);
+        $this->assertSame($config['*']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
+        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
     }
 
     public function testWillAddHeadersWithCommonWithRouteSpecificHeadersConfiguredWhenRouteMatched(): void
@@ -131,12 +131,20 @@ class ResponseHeaderMiddlewareTest extends TestCase
                 ],
                 'CustomHeader2' => [
                     'value'     => 'CustomHeader2-Value',
-                    'overwrite' => false,
+                    'overwrite' => true,
                 ],
             ],
             'home' => [
-                'CustomHeader' => [
+                'CustomHeader'  => [
                     'value' => 'header3',
+                ],
+                'CustomHeader1' => [
+                    'value'     => 'CustomHeader1-Overwritten-Value',
+                    'overwrite' => true,
+                ],
+                'CustomHeader2' => [
+                    'value'     => 'CustomHeader2-Overwritten-Value',
+                    'overwrite' => false,
                 ],
             ],
         ];
@@ -153,12 +161,17 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertCount(2, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader1'));
         $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($response->getHeaderLine('CustomHeader1'), $config['*']['CustomHeader1']['value']);
-        $this->assertSame($response->getHeaderLine('CustomHeader2'), $config['*']['CustomHeader2']['value']);
+        $this->assertSame($config['*']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
+        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
 
         $response = $responseHeader->addHeaders($response, 'home');
         $this->assertCount(3, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader'));
-        $this->assertSame($response->getHeaderLine('CustomHeader'), $config['home']['CustomHeader']['value']);
+        $this->assertTrue($response->hasHeader('CustomHeader1'));
+        $this->assertTrue($response->hasHeader('CustomHeader2'));
+        $this->assertSame($config['home']['CustomHeader']['value'], $response->getHeaderLine('CustomHeader'));
+        $this->assertSame($config['home']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
+        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
+        $this->assertNotSame($config['home']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
     }
 }
