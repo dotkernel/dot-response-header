@@ -57,7 +57,7 @@ class ResponseHeaderMiddlewareTest extends TestCase
 
     public function testWillAddHeadersWithCommonWithoutRouteSpecificHeadersConfigured(): void
     {
-        $responseHeader = new ResponseHeaderMiddleware([
+        $config         = [
             '*' => [
                 'CustomHeader1' => [
                     'value'     => 'CustomHeader1-Value',
@@ -68,9 +68,11 @@ class ResponseHeaderMiddlewareTest extends TestCase
                     'overwrite' => false,
                 ],
             ],
-        ]);
+        ];
+        $responseHeader = new ResponseHeaderMiddleware($config);
 
         $response = new Response();
+
         $response = $responseHeader->addHeaders($response, 'test');
         $this->assertEmpty($response->getHeaders());
         $this->assertFalse($response->hasHeader('CustomHeader1'));
@@ -80,11 +82,13 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertCount(2, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader1'));
         $this->assertTrue($response->hasHeader('CustomHeader2'));
+        $this->assertSame($response->getHeaderLine('CustomHeader1'), $config['*']['CustomHeader1']['value']);
+        $this->assertSame($response->getHeaderLine('CustomHeader2'), $config['*']['CustomHeader2']['value']);
     }
 
     public function testWillAddHeadersWithCommonWithRouteSpecificHeadersConfiguredWhenNoRouteMatched(): void
     {
-        $responseHeader = new ResponseHeaderMiddleware([
+        $config         = [
             '*'    => [
                 'CustomHeader1' => [
                     'value'     => 'CustomHeader1-Value',
@@ -100,7 +104,8 @@ class ResponseHeaderMiddlewareTest extends TestCase
                     'value' => 'header3',
                 ],
             ],
-        ]);
+        ];
+        $responseHeader = new ResponseHeaderMiddleware($config);
 
         $response = new Response();
 
@@ -112,11 +117,13 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertCount(2, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader1'));
         $this->assertTrue($response->hasHeader('CustomHeader2'));
+        $this->assertSame($response->getHeaderLine('CustomHeader1'), $config['*']['CustomHeader1']['value']);
+        $this->assertSame($response->getHeaderLine('CustomHeader2'), $config['*']['CustomHeader2']['value']);
     }
 
     public function testWillAddHeadersWithCommonWithRouteSpecificHeadersConfiguredWhenRouteMatched(): void
     {
-        $responseHeader = new ResponseHeaderMiddleware([
+        $config         = [
             '*'    => [
                 'CustomHeader1' => [
                     'value'     => 'CustomHeader1-Value',
@@ -132,7 +139,8 @@ class ResponseHeaderMiddlewareTest extends TestCase
                     'value' => 'header3',
                 ],
             ],
-        ]);
+        ];
+        $responseHeader = new ResponseHeaderMiddleware($config);
 
         $response = new Response();
 
@@ -145,9 +153,12 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->assertCount(2, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader1'));
         $this->assertTrue($response->hasHeader('CustomHeader2'));
+        $this->assertSame($response->getHeaderLine('CustomHeader1'), $config['*']['CustomHeader1']['value']);
+        $this->assertSame($response->getHeaderLine('CustomHeader2'), $config['*']['CustomHeader2']['value']);
 
         $response = $responseHeader->addHeaders($response, 'home');
         $this->assertCount(3, $response->getHeaders());
         $this->assertTrue($response->hasHeader('CustomHeader'));
+        $this->assertSame($response->getHeaderLine('CustomHeader'), $config['home']['CustomHeader']['value']);
     }
 }
