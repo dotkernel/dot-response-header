@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DotTest\ResponseHeader;
+namespace DotTest\ResponseHeader\Middleware;
 
 use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
 use Laminas\Diactoros\Response;

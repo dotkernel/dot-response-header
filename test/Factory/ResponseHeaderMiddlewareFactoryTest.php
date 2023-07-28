@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DotTest\ResponseHeader;
+namespace DotTest\ResponseHeader\Factory;
 
 use Dot\ResponseHeader\Factory\ResponseHeaderMiddlewareFactory;
 use PHPUnit\Framework\MockObject\Exception;
