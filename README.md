@@ -9,8 +9,7 @@
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/blob/3.0/LICENSE)
 
 [![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml)
-[[codecov](https://codecov.io/gh/dotkernel/dot-response-header/graph/badge.svg?token=NNRZN0FBF2)](https://codecov.io/gh/dotkernel/dot-response-header)
-
+[![codecov](https://codecov.io/gh/dotkernel/dot-response-header/graph/badge.svg?token=NNRZN0FBF2)](https://codecov.io/gh/dotkernel/dot-response-header)
 [![SymfonyInsight](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438/big.svg)](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438)
 
 
