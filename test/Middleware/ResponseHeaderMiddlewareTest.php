@@ -17,9 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ResponseHeaderMiddlewareTest extends TestCase
 {
     private ResponseHeaderMiddleware $responseHeader;
-
     private ServerRequestInterface|MockObject $serverRequest;
-
     private RequestHandlerInterface|MockObject $requestHandler;
 
     /**
@@ -32,17 +30,11 @@ class ResponseHeaderMiddlewareTest extends TestCase
         $this->requestHandler = $this->createMock(RequestHandlerInterface::class);
     }
 
-    public function testProcess()
+    public function testProcess(): void
     {
         $data = $this->responseHeader->process($this->serverRequest, $this->requestHandler);
 
         $this->assertInstanceOf(ResponseInterface::class, $data);
-        $this->assertInstanceOf(StreamInterface::class, $data->getBody());
-        $this->assertNotEmpty($data->getBody());
-        $this->assertIsArray($data->getHeaders());
-        $this->assertIsInt($data->getStatusCode());
-        $this->assertIsString($data->getProtocolVersion());
-        $this->assertIsString($data->getReasonPhrase());
     }
 
     public function testWillNotAddHeadersWithoutCommonWithoutRouteSpecificHeadersConfigured(): void

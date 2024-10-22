@@ -16,14 +16,14 @@ class ConfigProviderTest extends TestCase
         $this->configProvider = new ConfigProvider();
     }
 
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $data = $this->configProvider->__invoke();
 
         $this->assertIsArray($data);
     }
 
-    public function testGetDependencies()
+    public function testGetDependencies(): void
     {
         $data = $this->configProvider->getDependencies();
 
