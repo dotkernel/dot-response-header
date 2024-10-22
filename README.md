@@ -1,7 +1,7 @@
 # dot-response-header
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.2.3)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.4.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/network)
@@ -10,8 +10,6 @@
 
 [![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-response-header/graph/badge.svg?token=NNRZN0FBF2)](https://codecov.io/gh/dotkernel/dot-response-header)
-
-[![SymfonyInsight](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438/big.svg)](https://insight.symfony.com/projects/dce88959-bd29-40ef-b1e7-d12815145438)
 
 Middleware for setting and overwriting custom response headers.
 
@@ -23,22 +21,29 @@ Middleware for setting and overwriting custom response headers.
 
 Run the following command in your project root directory
 
-    composer require dotkernel/dot-response-header
+```shell
+composer require dotkernel/dot-response-header
+```
 
 Next, register the package's `ConfigProvider` to your application config.
 
-    Dot\ResponseHeader\ConfigProvider::class,
+```php
+Dot\ResponseHeader\ConfigProvider::class,
+```
 
-Note : Make sure to register the package under the `// DK packages` section.
+Note: Make sure to register the package under the `// DK packages` section.
 
 After registering the package, add it to the middleware stack in `config/pipeline.php` after `$app->pipe(RouteMiddleware::class);`
 
-    $app->pipe(RouteMiddleware::class);
-    $app->pipe(\Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware::class);
+```php
+$app->pipe(RouteMiddleware::class);
+$app->pipe(\Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware::class);
+```
 
-Create a new file `response-header.global.php` in `config/autoload` with the below configuration array :
+Create a new file `response-header.global.php` in `config/autoload` with the below configuration array:
 
-    <?php
+```php
+<?php
     return [
         'dot_response_headers' => [
             '*' => [
@@ -63,7 +68,8 @@ Create a new file `response-header.global.php` in `config/autoload` with the bel
                 ]
             ],
         ]
-    ]; 
+    ];
+```
 
 Because headers are matched with route names, we can have custom response headers for every request, by defining new headers under the `*` key.
 
@@ -71,17 +77,19 @@ All headers under `*` will be set for every response.
 
 To add response headers for a specific set of routes, define a new array using the route name as the array key.
 
-Example :
+Example:
 
-    'dot_response_headers' => [
-        'user' => [
-            'UserCustomHeader' => [
-                'value' => 'UserCustomHeader-Value',
-                'overwrite' => false
-            ]
-        ],
-    ]
-    
-    // This will set a new header named UserCustomHeader with the UserCustomHeader-Value value for any route name matching 'user'
+```php
+'dot_response_headers' => [
+    'user' => [
+        'UserCustomHeader' => [
+            'value' => 'UserCustomHeader-Value',
+            'overwrite' => false
+        ]
+    ],
+]
+
+// This will set a new header named UserCustomHeader with the UserCustomHeader-Value value for any route name matching 'user'
+```
 
 To overwrite an existing header use `overwrite => true`.
