@@ -1,7 +1,7 @@
 # dot-response-header
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.4.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.4.1)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/network)
@@ -15,11 +15,11 @@ Middleware for setting and overwriting custom response headers.
 
 ## Requirements
 
-- PHP >= 8.1
+- **PHP**: 8.1, 8.2, 8.3 or 8.4
 
 ## Installation
 
-Run the following command in your project root directory
+Run the following command in your project root directory:
 
 ```shell
 composer require dotkernel/dot-response-header
@@ -31,7 +31,7 @@ Next, register the package's `ConfigProvider` to your application config.
 Dot\ResponseHeader\ConfigProvider::class,
 ```
 
-Note: Make sure to register the package under the `// DK packages` section.
+> Make sure to register the package under the `// DK packages` section.
 
 After registering the package, add it to the middleware stack in `config/pipeline.php` after `$app->pipe(RouteMiddleware::class);`
 

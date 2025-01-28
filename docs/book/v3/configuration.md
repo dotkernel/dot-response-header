@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- PHP >= 8.1
+- **PHP**: 8.1, 8.2, 8.3 or 8.4
 
 ## Register ConfigProvider
 
@@ -12,7 +12,7 @@ Next, register the package's `ConfigProvider` to your application config.
 Dot\ResponseHeader\ConfigProvider::class,
 ```
 
-Note : Make sure to register the package under the `// DK packages` section.
+> Make sure to register the package under the `// DK packages` section.
 
 ## Add the package to the middleware stack
 
@@ -25,7 +25,7 @@ $app->pipe(\Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware::class);
 
 ## Add configuration in autoload
 
-Create a new file `response-header.global.php` in `config/autoload` with the below configuration array :
+Create a new file `response-header.global.php` in `config/autoload` with the below configuration array:
 
 ```php
 <?php

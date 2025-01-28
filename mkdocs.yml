@@ -13,7 +13,7 @@ nav:
       - Configuration: v3/configuration.md
       - Usage: v3/usage.md
 site_name: dot-response-header
-site_description: "DotKernel's middleware for setting and overwriting custom response headers."
+site_description: "Dotkernel's middleware for setting and overwriting custom response headers."
 repo_url: "https://github.com/dotkernel/dot-response-header"
 plugins:
   - search
