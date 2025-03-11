@@ -33,7 +33,7 @@ class ResponseHeaderMiddlewareTest extends TestCase
     {
         $data = $this->responseHeader->process($this->serverRequest, $this->requestHandler);
 
-        $this->assertInstanceOf(ResponseInterface::class, $data);
+        $this->assertContainsOnlyInstancesOf(ResponseInterface::class, [$data]);
     }
 
     public function testWillNotAddHeadersWithoutCommonWithoutRouteSpecificHeadersConfigured(): void
