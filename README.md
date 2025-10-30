@@ -9,7 +9,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-response-header/.
 ## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.5.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.6.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/network)
@@ -22,7 +22,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-response-header/.
 
 ## Requirements
 
-- **PHP**: 8.1, 8.2, 8.3 or 8.4
+- **PHP**: 8.2, 8.3, 8.4 or 8.5
 
 ## Installation
 
@@ -51,31 +51,32 @@ Create a new file `response-header.global.php` in `config/autoload` with the bel
 
 ```php
 <?php
-    return [
-        'dot_response_headers' => [
-            '*' => [
-                'CustomHeader1' => [
-                    'value' => 'CustomHeader1-Value',
-                    'overwrite' => true,
-                ],
-                'CustomHeader2' => [
-                    'value' => 'CustomHeader2-Value',
-                    'overwrite' => false,
-                ],
+
+return [
+    'dot_response_headers' => [
+        '*'     => [
+            'CustomHeader1' => [
+                'value'     => 'CustomHeader1-Value',
+                'overwrite' => true,
             ],
-            'home' => [
-                'CustomHeader' => [
-                    'value' => 'header3',
-                ]
+            'CustomHeader2' => [
+                'value'     => 'CustomHeader2-Value',
+                'overwrite' => false,
             ],
-            'login' => [
-                'LoginHeader' => [
-                    'value' => 'LoginHeader-Value',
-                    'overwrite' => false
-                ]
+        ],
+        'home'  => [
+            'CustomHeader' => [
+                'value' => 'header3',
             ],
-        ]
-    ];
+        ],
+        'login' => [
+            'LoginHeader' => [
+                'value'     => 'LoginHeader-Value',
+                'overwrite' => false
+            ],
+        ],
+    ],
+];
 ```
 
 Because headers are matched with route names, we can have custom response headers for every request, by defining new headers under the `*` key.
@@ -90,8 +91,8 @@ Example:
 'dot_response_headers' => [
     'user' => [
         'UserCustomHeader' => [
-            'value' => 'UserCustomHeader-Value',
-            'overwrite' => false
+            'value'     => 'UserCustomHeader-Value',
+            'overwrite' => false,
         ]
     ],
 ]

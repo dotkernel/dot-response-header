@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- **PHP**: 8.1, 8.2, 8.3 or 8.4
+- **PHP**: 8.2, 8.3, 8.4 or 8.5
 
 ## Register ConfigProvider
 
@@ -29,29 +29,30 @@ Create a new file `response-header.global.php` in `config/autoload` with the bel
 
 ```php
 <?php
+
 return [
     'dot_response_headers' => [
-        '*' => [
+        '*'     => [
             'CustomHeader1' => [
-                'value' => 'CustomHeader1-Value',
+                'value'     => 'CustomHeader1-Value',
                 'overwrite' => true,
             ],
             'CustomHeader2' => [
-                'value' => 'CustomHeader2-Value',
+                'value'     => 'CustomHeader2-Value',
                 'overwrite' => false,
             ],
         ],
-        'home' => [
+        'home'  => [
             'CustomHeader' => [
                 'value' => 'header3',
-            ]
+            ],
         ],
         'login' => [
             'LoginHeader' => [
                 'value' => 'LoginHeader-Value',
-                'overwrite' => false
-            ]
+                'overwrite' => false,
+            ],
         ],
-    ]
-]; 
+    ],
+];
 ```
