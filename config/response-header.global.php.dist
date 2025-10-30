@@ -15,7 +15,7 @@ return [
         'home' => [
             'CustomHeader' => [
                 'value' => 'header3',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

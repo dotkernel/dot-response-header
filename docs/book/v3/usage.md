@@ -12,11 +12,11 @@ To add response headers for a specific set of routes, define a new array using t
 'dot_response_headers' => [
     'user' => [
         'UserCustomHeader' => [
-            'value' => 'UserCustomHeader-Value',
-            'overwrite' => false
-        ]
+            'value'     => 'UserCustomHeader-Value',
+            'overwrite' => false,
+        ],
     ],
-]
+],
 
 // This will set a new header named UserCustomHeader with the UserCustomHeader-Value value for any route name matching 'user'
 ```
