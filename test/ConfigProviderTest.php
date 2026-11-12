@@ -5,28 +5,26 @@ declare(strict_types=1);
 namespace DotTest\ResponseHeader;
 
 use Dot\ResponseHeader\ConfigProvider;
+use Dot\ResponseHeader\Factory\ResponseHeaderMiddlewareFactory;
+use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
 use PHPUnit\Framework\TestCase;
 
-class ConfigProviderTest extends TestCase
+final class ConfigProviderTest extends TestCase
 {
-    private ConfigProvider $configProvider;
-
-    public function setUp(): void
+    public function testInvokeReturnsDependencies(): void
     {
-        $this->configProvider = new ConfigProvider();
+        $config = (new ConfigProvider())();
+
+        $this->assertSame(['dependencies' => (new ConfigProvider())->getDependencies()], $config);
     }
 
-    public function testInvoke(): void
+    public function testMiddlewareIsRegisteredWithItsFactory(): void
     {
-        $data = $this->configProvider->__invoke();
+        $dependencies = (new ConfigProvider())->getDependencies();
 
-        $this->assertIsArray($data);
-    }
-
-    public function testGetDependencies(): void
-    {
-        $data = $this->configProvider->getDependencies();
-
-        $this->assertIsArray($data);
+        $this->assertSame(
+            [ResponseHeaderMiddleware::class => ResponseHeaderMiddlewareFactory::class],
+            $dependencies['factories']
+        );
     }
 }

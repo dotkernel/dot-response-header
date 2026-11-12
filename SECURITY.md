@@ -2,10 +2,11 @@
 
 ## Supported Versions
 
-| Version | Supported          | PHP Version                                                                                                         |
-|---------|--------------------|---------------------------------------------------------------------------------------------------------------------|
-| 3.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.6.0) |
-| <= 2.x  | :x:                |                                                                                                                     |
+| Version | Supported           | PHP Version                                                                                                         |
+|---------|---------------------|---------------------------------------------------------------------------------------------------------------------|
+| 4.x     | :white_check_mark:  | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/4.0.0) |
+| 3.x     | Security fixes only | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.6.0) |
+| <= 2.x  | :x:                 |                                                                                                                     |
 
 ## Reporting Potential Security Issues
 
@@ -20,11 +21,10 @@ When reporting issues, please provide the following information:
 - A summary of the security vulnerability and impact
 
 We request that you contact us via the email address above and give the
-project contributors a chance to resolve the vulnerability and issue a newc
+project contributors a chance to resolve the vulnerability and issue a new
 release prior to any public exposure; this helps protect the project's
 users, and provides them with a chance to upgrade and/or update in order to
 protect their applications.
-
 
 ## Policy
 
