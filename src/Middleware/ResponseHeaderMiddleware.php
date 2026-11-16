@@ -77,7 +77,7 @@ class ResponseHeaderMiddleware implements MiddlewareInterface
      * @return ResponseHeadersConfig
      * @throws InvalidConfigException
      */
-    private static function normalize(array $config): array
+    private function normalize(array $config): array
     {
         $normalized = [];
         foreach ($config as $route => $headers) {
@@ -110,7 +110,7 @@ class ResponseHeaderMiddleware implements MiddlewareInterface
      * @return string|non-empty-list<string>
      * @throws InvalidConfigException
      */
-    private static function normalizeValue(int|string $route, int|string $header, mixed $value): string|array
+    private function normalizeValue(int|string $route, int|string $header, mixed $value): string|array
     {
         if (is_string($value)) {
             return $value;
