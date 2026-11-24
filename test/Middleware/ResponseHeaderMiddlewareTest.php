@@ -4,165 +4,173 @@ declare(strict_types=1);
 
 namespace DotTest\ResponseHeader\Middleware;
 
+use Dot\ResponseHeader\Exception\InvalidConfigException;
 use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
+use DotTest\ResponseHeader\Fixture\FixedResponseHandler;
 use Laminas\Diactoros\Response;
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
+use Laminas\Diactoros\ServerRequest;
+use Mezzio\Router\Route;
+use Mezzio\Router\RouteResult;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ResponseHeaderMiddlewareTest extends TestCase
+final class ResponseHeaderMiddlewareTest extends TestCase
 {
-    private ResponseHeaderMiddleware $responseHeader;
-    private ServerRequestInterface|MockObject $serverRequest;
-    private RequestHandlerInterface|MockObject $requestHandler;
+    private const CONFIG = [
+        '*'    => [
+            'X-All'       => ['value' => 'all', 'overwrite' => false],
+            'X-Overwrite' => ['value' => 'all', 'overwrite' => true],
+        ],
+        'home' => [
+            'X-Home'      => ['value' => 'home'],
+            'X-All'       => ['value' => 'home', 'overwrite' => true],
+            'X-Overwrite' => ['value' => 'home', 'overwrite' => false],
+        ],
+    ];
+
+    public function testEmptyConfigReturnsTheHandlerResponseUnchanged(): void
+    {
+        $handler  = new FixedResponseHandler(['X-Existing' => 'kept']);
+        $response = (new ResponseHeaderMiddleware([]))->process(new ServerRequest(), $handler);
+
+        $this->assertSame($handler->handle(new ServerRequest()), $response);
+    }
+
+    public function testWithoutRouteResultOnlyCommonHeadersAreAdded(): void
+    {
+        $response = (new ResponseHeaderMiddleware(self::CONFIG))
+            ->process(new ServerRequest(), new FixedResponseHandler());
+
+        $this->assertSame(['X-All' => ['all'], 'X-Overwrite' => ['all']], $response->getHeaders());
+    }
+
+    public function testRouteFailureOnlyAddsCommonHeaders(): void
+    {
+        $request  = (new ServerRequest())->withAttribute(RouteResult::class, RouteResult::fromRouteFailure(null));
+        $response = (new ResponseHeaderMiddleware(self::CONFIG))->process($request, new FixedResponseHandler());
+
+        $this->assertSame(['X-All' => ['all'], 'X-Overwrite' => ['all']], $response->getHeaders());
+    }
+
+    public function testMatchedRouteAddsRouteHeadersAfterCommonHeaders(): void
+    {
+        $response = (new ResponseHeaderMiddleware(self::CONFIG))
+            ->process($this->requestForRoute('home'), new FixedResponseHandler());
+
+        $this->assertSame('home', $response->getHeaderLine('X-Home'));
+        $this->assertSame('home', $response->getHeaderLine('X-All'), 'route header with overwrite replaces *');
+        $this->assertSame('all', $response->getHeaderLine('X-Overwrite'), 'route header without overwrite keeps *');
+    }
+
+    public function testRouteWithoutConfigOnlyAddsCommonHeaders(): void
+    {
+        $response = (new ResponseHeaderMiddleware(self::CONFIG))
+            ->process($this->requestForRoute('login'), new FixedResponseHandler());
+
+        $this->assertSame(['X-All' => ['all'], 'X-Overwrite' => ['all']], $response->getHeaders());
+    }
+
+    public function testHeaderSetByTheHandlerIsKeptUnlessOverwriteIsTrue(): void
+    {
+        $handler  = new FixedResponseHandler(['x-all' => 'handler', 'x-overwrite' => 'handler']);
+        $response = (new ResponseHeaderMiddleware(self::CONFIG))->process(new ServerRequest(), $handler);
+
+        $this->assertSame('handler', $response->getHeaderLine('X-All'));
+        $this->assertSame('all', $response->getHeaderLine('X-Overwrite'));
+    }
+
+    public function testHeaderWithoutValueIsSkipped(): void
+    {
+        $response = (new ResponseHeaderMiddleware(['*' => ['X-Empty' => ['overwrite' => true]]]))
+            ->process(new ServerRequest(), new FixedResponseHandler());
+
+        $this->assertFalse($response->hasHeader('X-Empty'));
+    }
 
     /**
-     * @throws Exception
+     * @return iterable<string, array{mixed, list<string>}>
      */
-    public function setUp(): void
+    public static function validValueProvider(): iterable
     {
-        $this->responseHeader = new ResponseHeaderMiddleware([]);
-        $this->serverRequest  = $this->createMock(ServerRequestInterface::class);
-        $this->requestHandler = $this->createMock(RequestHandlerInterface::class);
+        yield 'string' => ['text', ['text']];
+        yield 'int' => [3600, ['3600']];
+        yield 'float' => [1.5, ['1.5']];
+        yield 'list of strings' => [['Accept', 'Origin'], ['Accept', 'Origin']];
     }
 
-    public function testProcess(): void
+    /**
+     * @param list<string> $expected
+     */
+    #[DataProvider('validValueProvider')]
+    public function testAcceptedValueTypes(mixed $value, array $expected): void
     {
-        $data = $this->responseHeader->process($this->serverRequest, $this->requestHandler);
+        $response = (new ResponseHeaderMiddleware(['*' => ['X-Value' => ['value' => $value]]]))
+            ->addHeaders(new Response(), '*');
 
-        $this->assertContainsOnlyInstancesOf(ResponseInterface::class, [$data]);
+        $this->assertSame($expected, $response->getHeader('X-Value'));
     }
 
-    public function testWillNotAddHeadersWithoutCommonWithoutRouteSpecificHeadersConfigured(): void
+    /**
+     * @return iterable<string, array{array<mixed>, string}>
+     */
+    public static function invalidConfigProvider(): iterable
     {
-        $responseHeader = new ResponseHeaderMiddleware([]);
-
-        $response = new Response();
-        $response = $responseHeader->addHeaders($response, 'test');
-
-        $this->assertEmpty($response->getHeaders());
-    }
-
-    public function testWillAddHeadersWithCommonWithoutRouteSpecificHeadersConfigured(): void
-    {
-        $config         = [
-            '*' => [
-                'CustomHeader1' => [
-                    'value'     => 'CustomHeader1-Value',
-                    'overwrite' => true,
-                ],
-                'CustomHeader2' => [
-                    'value'     => 'CustomHeader2-Value',
-                    'overwrite' => false,
-                ],
-            ],
+        yield 'route is a string' => [
+            ['*' => 'X-All'],
+            'dot_response_headers.* must be an array of headers, string given.',
         ];
-        $responseHeader = new ResponseHeaderMiddleware($config);
-
-        $response = new Response();
-
-        $response = $responseHeader->addHeaders($response, 'test');
-        $this->assertEmpty($response->getHeaders());
-        $this->assertFalse($response->hasHeader('CustomHeader1'));
-        $this->assertFalse($response->hasHeader('CustomHeader2'));
-
-        $response = $responseHeader->addHeaders($response, '*');
-        $this->assertCount(2, $response->getHeaders());
-        $this->assertTrue($response->hasHeader('CustomHeader1'));
-        $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($config['*']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
-        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
+        yield 'header is a string' => [
+            ['home' => ['X-Home' => 'home']],
+            'dot_response_headers.home.X-Home must be an array with a "value" key, string given.',
+        ];
+        yield 'value is null' => [
+            ['*' => ['X-All' => ['value' => null]]],
+            'dot_response_headers.*.X-All.value must be a string, a number or a list of strings, null given.',
+        ];
+        yield 'value is an empty array' => [
+            ['*' => ['X-All' => ['value' => []]]],
+            'dot_response_headers.*.X-All.value must be a string, a number or a list of strings, array given.',
+        ];
+        yield 'value list holds a non-string' => [
+            ['*' => ['X-All' => ['value' => ['a', 1]]]],
+            'dot_response_headers.*.X-All.value must be a string, a number or a list of strings, array given.',
+        ];
+        yield 'overwrite is an int' => [
+            ['*' => ['X-All' => ['value' => 'a', 'overwrite' => 1]]],
+            'dot_response_headers.*.X-All.overwrite must be a bool, int given.',
+        ];
     }
 
-    public function testWillAddHeadersWithCommonWithRouteSpecificHeadersConfiguredWhenNoRouteMatched(): void
+    /**
+     * @param array<mixed> $config
+     */
+    #[DataProvider('invalidConfigProvider')]
+    public function testInvalidConfigIsRejectedOnConstruction(array $config, string $message): void
     {
-        $config         = [
-            '*'    => [
-                'CustomHeader1' => [
-                    'value'     => 'CustomHeader1-Value',
-                    'overwrite' => true,
-                ],
-                'CustomHeader2' => [
-                    'value'     => 'CustomHeader2-Value',
-                    'overwrite' => false,
-                ],
-            ],
-            'home' => [
-                'CustomHeader' => [
-                    'value' => 'header3',
-                ],
-            ],
-        ];
-        $responseHeader = new ResponseHeaderMiddleware($config);
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage($message);
 
-        $response = new Response();
-
-        $response = $responseHeader->addHeaders($response, 'test');
-        $this->assertFalse($response->hasHeader('CustomHeader'));
-        $this->assertEmpty($response->getHeaders());
-
-        $response = $responseHeader->addHeaders($response, '*');
-        $this->assertCount(2, $response->getHeaders());
-        $this->assertTrue($response->hasHeader('CustomHeader1'));
-        $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($config['*']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
-        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
+        new ResponseHeaderMiddleware($config);
     }
 
-    public function testWillAddHeadersWithCommonWithRouteSpecificHeadersConfiguredWhenRouteMatched(): void
+    private function requestForRoute(string $name): ServerRequestInterface
     {
-        $config         = [
-            '*'    => [
-                'CustomHeader1' => [
-                    'value'     => 'CustomHeader1-Value',
-                    'overwrite' => true,
-                ],
-                'CustomHeader2' => [
-                    'value'     => 'CustomHeader2-Value',
-                    'overwrite' => true,
-                ],
-            ],
-            'home' => [
-                'CustomHeader'  => [
-                    'value' => 'header3',
-                ],
-                'CustomHeader1' => [
-                    'value'     => 'CustomHeader1-Overwritten-Value',
-                    'overwrite' => true,
-                ],
-                'CustomHeader2' => [
-                    'value'     => 'CustomHeader2-Overwritten-Value',
-                    'overwrite' => false,
-                ],
-            ],
-        ];
-        $responseHeader = new ResponseHeaderMiddleware($config);
+        $middleware = new class implements MiddlewareInterface {
+            public function process(
+                ServerRequestInterface $request,
+                RequestHandlerInterface $handler
+            ): ResponseInterface {
+                return $handler->handle($request);
+            }
+        };
 
-        $response = new Response();
-
-        $this->assertFalse($response->hasHeader('CustomHeader1'));
-        $this->assertFalse($response->hasHeader('CustomHeader2'));
-        $this->assertFalse($response->hasHeader('CustomHeader'));
-        $this->assertEmpty($response->getHeaders());
-
-        $response = $responseHeader->addHeaders($response, '*');
-        $this->assertCount(2, $response->getHeaders());
-        $this->assertTrue($response->hasHeader('CustomHeader1'));
-        $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($config['*']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
-        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
-
-        $response = $responseHeader->addHeaders($response, 'home');
-        $this->assertCount(3, $response->getHeaders());
-        $this->assertTrue($response->hasHeader('CustomHeader'));
-        $this->assertTrue($response->hasHeader('CustomHeader1'));
-        $this->assertTrue($response->hasHeader('CustomHeader2'));
-        $this->assertSame($config['home']['CustomHeader']['value'], $response->getHeaderLine('CustomHeader'));
-        $this->assertSame($config['home']['CustomHeader1']['value'], $response->getHeaderLine('CustomHeader1'));
-        $this->assertSame($config['*']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
-        $this->assertNotSame($config['home']['CustomHeader2']['value'], $response->getHeaderLine('CustomHeader2'));
+        return (new ServerRequest())->withAttribute(
+            RouteResult::class,
+            RouteResult::fromRoute(new Route('/' . $name, $middleware, ['GET'], $name))
+        );
     }
 }

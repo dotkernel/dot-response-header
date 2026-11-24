@@ -6,23 +6,33 @@
 
 Documentation is available at: https://docs.dotkernel.org/dot-response-header/.
 
+## Versions
+
+| Version | Supported | PHP |
+| --- | --- | --- |
+| 4.x | :white_check_mark: | 8.3 to 8.6 |
+| 3.x | Security fixes only | 8.2 to 8.5 |
+| <= 2.x | :x: | |
+
+Upgrading from 3.x? See [Upgrading to 4.x](https://docs.dotkernel.org/dot-response-header/v4/upgrading/).
+
 ## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-response-header)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/3.6.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-response-header/4.0.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/network)
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/stargazers)
-[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/blob/3.0/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/blob/4.0/LICENSE)
 
-[![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml)
+[![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-response-header/graph/badge.svg?token=NNRZN0FBF2)](https://codecov.io/gh/dotkernel/dot-response-header)
-[![PHPStan](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml)
+[![PHPStan](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml)
 
 ## Requirements
 
-- **PHP**: 8.2, 8.3, 8.4 or 8.5
+- **PHP**: 8.3, 8.4, 8.5 or 8.6
 
 ## Installation
 
@@ -72,7 +82,7 @@ return [
         'login' => [
             'LoginHeader' => [
                 'value'     => 'LoginHeader-Value',
-                'overwrite' => false
+                'overwrite' => false,
             ],
         ],
     ],
@@ -83,7 +93,7 @@ Because headers are matched with route names, we can have custom response header
 
 All headers under `*` will be set for every response.
 
-To add response headers for a specific set of routes, define a new array using the route name as the array key.
+To add response headers for a specific route, define a new array using the exact route name as the array key.
 
 Example:
 
@@ -93,11 +103,13 @@ Example:
         'UserCustomHeader' => [
             'value'     => 'UserCustomHeader-Value',
             'overwrite' => false,
-        ]
+        ],
     ],
-]
+],
 
-// This will set a new header named UserCustomHeader with the UserCustomHeader-Value value for any route name matching 'user'
+// This will set a new header named UserCustomHeader with the UserCustomHeader-Value value for the route named 'user'
 ```
 
-To overwrite an existing header use `overwrite => true`.
+To overwrite an existing header use `overwrite => true`. The `*` headers are applied before the route headers, so a route header replaces a `*` header with the same name only when it sets `overwrite => true`.
+
+An invalid configuration throws `Dot\ResponseHeader\Exception\InvalidConfigException` when the middleware is created, with a message naming the key.

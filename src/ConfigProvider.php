@@ -7,8 +7,11 @@ namespace Dot\ResponseHeader;
 use Dot\ResponseHeader\Factory\ResponseHeaderMiddlewareFactory;
 use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
 
-class ConfigProvider
+final class ConfigProvider
 {
+    /**
+     * @return array{dependencies: array{factories: array<class-string, class-string>}}
+     */
     public function __invoke(): array
     {
         return [
@@ -16,6 +19,9 @@ class ConfigProvider
         ];
     }
 
+    /**
+     * @return array{factories: array<class-string, class-string>}
+     */
     public function getDependencies(): array
     {
         return [
