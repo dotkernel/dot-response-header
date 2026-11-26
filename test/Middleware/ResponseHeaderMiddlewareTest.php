@@ -7,7 +7,7 @@ namespace DotTest\ResponseHeader\Middleware;
 use Dot\ResponseHeader\Middleware\ResponseHeaderMiddleware;
 use Laminas\Diactoros\Response;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,8 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ResponseHeaderMiddlewareTest extends TestCase
 {
     private ResponseHeaderMiddleware $responseHeader;
-    private ServerRequestInterface|MockObject $serverRequest;
-    private RequestHandlerInterface|MockObject $requestHandler;
+    private ServerRequestInterface|Stub $serverRequest;
+    private RequestHandlerInterface|Stub $requestHandler;
 
     /**
      * @throws Exception
@@ -25,8 +25,8 @@ class ResponseHeaderMiddlewareTest extends TestCase
     public function setUp(): void
     {
         $this->responseHeader = new ResponseHeaderMiddleware([]);
-        $this->serverRequest  = $this->createMock(ServerRequestInterface::class);
-        $this->requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $this->serverRequest  = $this->createStub(ServerRequestInterface::class);
+        $this->requestHandler = $this->createStub(RequestHandlerInterface::class);
     }
 
     public function testProcess(): void
