@@ -14,6 +14,6 @@ Headers are configured per route name, plus a `*` group that applies to every re
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/stargazers)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-response-header)](https://github.com/dotkernel/dot-response-header/blob/4.0/LICENSE)
 
-[![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml)
+[![Build Static](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml/badge.svg?branch=4.x)](https://github.com/dotkernel/dot-response-header/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-response-header/graph/badge.svg?token=NNRZN0FBF2)](https://codecov.io/gh/dotkernel/dot-response-header)
-[![PHPStan](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml)
+[![PHPStan](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml/badge.svg?branch=4.x)](https://github.com/dotkernel/dot-response-header/actions/workflows/static-analysis.yml)
